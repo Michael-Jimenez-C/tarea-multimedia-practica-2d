@@ -10,6 +10,8 @@ public class Personaje : MonoBehaviour
 
     //Voltear Caballero
     bool voltearCaballero = true;
+    bool enSuelo = true;
+
     SpriteRenderer caballeroRender;
     
     void Start()
@@ -23,7 +25,7 @@ public class Personaje : MonoBehaviour
     {
         float mover = Input.GetAxis("Horizontal");
 	float jump = Input.GetAxis("Jump");
-	Debug.Log(jump);
+	float salto  = 0;
 
 	if (mover > 0 &&  !voltearCaballero){
 		Voltear();
@@ -31,12 +33,23 @@ public class Personaje : MonoBehaviour
 		Voltear();
 	}
 
-	caballeroRB.velocity = new Vector3(mover*maximaVelocidad, caballeroRB.velocity.y,0);
+	if (jump > 0 && enSuelo){
+		enSuelo = false;
+		salto = 5f;
+	}
+
+	caballeroRB.velocity = new Vector3(mover*maximaVelocidad, caballeroRB.velocity.y+salto,0);
 
     }
 
     void Voltear(){
     	voltearCaballero = !voltearCaballero;
 	caballeroRender.flipX = !caballeroRender.flipX;
+    }
+
+    void OnTriggerEntry(Collider colision){
+    	if (colision.CompareTag("Piso")){
+		enSuelo = true;
+	}
     }
 }
